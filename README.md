@@ -3,3 +3,8 @@ OAuth Tokens for Your Workspace
 
 C03LZ1ARM0T
 cHANNEL id
+
+            # npm update mkdirp --depth 6
+            # npm install --save-dev webpack@5.73.0
+            # npm audit fix --audit-level=critical --force
+            # npm audit --audit-level=critical 
