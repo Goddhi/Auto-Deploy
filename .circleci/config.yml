@@ -90,7 +90,7 @@ jobs:
   scan-backend:
     <<: *defaults
     steps:
-      - checkout
+      - checkout:
       - restore_cache:
           keys: [backend-cache]
 
