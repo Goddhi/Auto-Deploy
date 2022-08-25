@@ -1,7 +1,7 @@
 version: 2.1
 
-orbs: 
-  slack: circleci/slack@4.10.1
+orbs:
+  slack: circleci/slack@4.1
 
 
 defaults: &defaults ## using an anchor at the beginning of .circleci/config.yml to set these lines as our default for jobs:
