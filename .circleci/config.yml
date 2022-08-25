@@ -71,7 +71,7 @@ jobs:
   scan-frontend:
     <<: *defaults
     steps:
-      - checkout"
+      - checkout
       - restore_cache:
           keys: [frontend-cache]
 
