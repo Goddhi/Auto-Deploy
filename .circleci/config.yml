@@ -9,10 +9,18 @@ jobs:
       - run:
           name: install and run fontend  build
           command: |
-          cd frontend
-          npm install
-          npm run build
+            cd frontend
+            npm install
+            npm run build
 
+  build-backend:
+    docker:
+      - image: circlec/node:13.8.0
+    steps:
+      - checkout
+      - run:
+          name:
+          command: |
 
 workflows:
   default-workflows:
