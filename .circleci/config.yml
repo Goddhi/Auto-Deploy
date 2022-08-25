@@ -1,9 +1,12 @@
 version: 2.1
 
+defaults: &defaults ## using an anchor at the beginning of .circleci/config.yml to set these lines as our default for jobs:
+  docker:
+    - image: circleci/node:13.8.0
+
 jobs:
   build-frontend:
-    docker: 
-      - image: circleci/node:13.8.0
+    <<: *defaults  ## Then we use an alias with each job to write less lines. Here’s an example using the  job from earlier:
     steps:
       - checkout
       - restore_cache:
@@ -20,11 +23,10 @@ jobs:
           key: frontend-cache
 
   build-backend:
-    docker:
-      - image: circlec/node:13.8.0
+    <<: *defaults   ## Then we use an alias with each job to write less lines. Here’s an example using the  job from earlier:
     steps:
       - checkout
-      - restor_cache:
+      - restore_cache:
           keys: [backend-cache]
       - run:
           name:
@@ -36,11 +38,28 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-cache
+
+  test-frontend:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [frontend-cache]
+
+      - run:
+          name: test front-end code for errors/bugs
+          command: |
+            cd frontend
+            npm install
+            npm run test
+    
+
 workflows:
   default-workflows:
     jobs:
       - build-frontend
       - build-backend
+      - test-frontend: [build-frontend]
 
 
 
