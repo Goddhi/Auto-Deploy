@@ -52,14 +52,32 @@ jobs:
             cd frontend
             npm install
             npm run test
-    
+
+
+  test-backend:
+    <<: *defaults
+    steps:
+      - checkout:
+      - restore_cache:
+          keys: [backend-cache]
+
+      - run: 
+          name: test back-end code for errors/bugs
+          command: |
+            cd backend
+            npm install
+            npm run test
+
 
 workflows:
   default-workflows:
     jobs:
       - build-frontend
       - build-backend
-      - test-frontend: [build-frontend]
+      - test-frontend: 
+          requires: [build-frontend]
+      - test-backend:
+          requires: [build-backend]
 
 
 
