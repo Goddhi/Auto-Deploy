@@ -1,5 +1,9 @@
 version: 2.1
 
+orbs: 
+  slack: circleci/slack@4.10.1
+
+
 defaults: &defaults ## using an anchor at the beginning of .circleci/config.yml to set these lines as our default for jobs:
   docker:
     - image: circleci/node:13.8.0
@@ -95,10 +99,14 @@ jobs:
           command: |
             cd backend
             npm install
-            npm update mkdirp --depth 6
-            npm install --save-dev webpack@5.73.0
-            npm audit fix --audit-level=critical --force
-            npm audit --audit-level=critical            
+            # npm update mkdirp --depth 6
+            # npm install --save-dev webpack@5.73.0
+            # npm audit fix --audit-level=critical --force
+            # npm audit --audit-level=critical            
+
+      - slack/notify:
+          event: fail
+          template: basic_fail_1 
 
 workflows:
   default-workflows:
