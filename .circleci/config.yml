@@ -6,6 +6,8 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
+      - restore_cahce:
+          keys: [frontend-cache]
       - run:
           name: install and run fontend  build
           command: |
@@ -13,19 +15,32 @@ jobs:
             npm install
             npm run build
 
+      - save_cache:
+          paths: [frontend/node_modules]
+          key: frontend-cache
+
   build-backend:
     docker:
       - image: circlec/node:13.8.0
     steps:
       - checkout
+      - restor_cache:
+          keys: [backend-cache]
       - run:
           name:
           command: |
+            cd backend
+            npm install
+            npm run build
 
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-cache
 workflows:
   default-workflows:
     jobs:
       - build-frontend
+      - build-backend
 
 
 
