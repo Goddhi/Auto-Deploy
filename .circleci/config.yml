@@ -90,7 +90,7 @@ jobs:
   scan-backend:
     <<: *defaults
     steps:
-      - checkout:
+      - checkout
       - restore_cache:
           keys: [backend-cache]
 
@@ -99,6 +99,10 @@ jobs:
           command: |
             cd backend
             npm install
+            npm update mkdirp --depth 6
+            npm install --save-dev webpack@5.73.0
+            npm audit fix --audit-level=critical --force
+            npm audit --audit-level=critical             
            
 
       - slack/notify:
