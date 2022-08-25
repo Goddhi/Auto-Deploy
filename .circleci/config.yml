@@ -6,7 +6,7 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cahce:
+      - restore_cache:
           keys: [frontend-cache]
       - run:
           name: install and run fontend  build
