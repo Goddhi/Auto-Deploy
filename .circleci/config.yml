@@ -68,6 +68,37 @@ jobs:
             npm install
             npm run test
 
+  scan-frontend:
+    <<: *defaults
+    steps:
+      - checkout"
+      - restore_cache:
+          keys: [frontend-cache]
+
+      - run:
+          name: scan frontend code for vulnerability and fix
+          command: |
+            cd frontend
+            npm install
+            npm audit fix --audit-level=critical --force            
+            npm audit --audit-level=critical
+
+  scan-backend:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [backend-cache]
+
+      - run: 
+          name: scan backend code for vulnerabilty and             
+          command: |
+            cd backend
+            npm install
+            npm update mkdirp --depth 6
+            npm install --save-dev webpack@5.73.0
+            npm audit fix --audit-level=critical --force
+            npm audit --audit-level=critical            
 
 workflows:
   default-workflows:
