@@ -12,7 +12,7 @@ commands:
   roll-back-to-blue-deployment:
     description: Destroy back-end and front-end cloudformation stacks givenn a workflow ID and roll back to previous version
     parameters:
-      workdlow_id:
+      workflow_id:
         type: string
 
     steps:
