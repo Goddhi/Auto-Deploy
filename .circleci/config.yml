@@ -8,6 +8,28 @@ defaults: &defaults ## using an anchor at the beginning of .circleci/config.yml 
   docker:
     - image: circleci/node:13.8.0
 
+commands:
+  roll-back-to-blue-deployment:
+    description: Destroy back-end and front-end cloudformation stacks givenn a workflow ID and roll back to previous version
+    parameters:
+      workdlow_id:
+        type: string
+
+    steps:
+      - run: destroy environment
+      - when: on_fail
+      - command: |
+          echo "Destroying environment: << parameters.workflow_id >>"
+            aws cloudformation delete-stack \
+            --stack-name udapeople-backend-<<parameters.workflow_id>>
+              aws s3 rm s3://udapeople-<<parameters.workflow_id>> --recursive
+            aws cloudformation delete-stack \
+            --stack-name udapeople-frontend-<<parameters.workflow_id>> 
+
+        
+
+  
+
 jobs:
   build-frontend:
     <<: *defaults  ## Then we use an alias with each job to write less lines. Here’s an example using the  job from earlier:
@@ -87,6 +109,7 @@ jobs:
             npm audit fix --audit-level=critical --force            
             npm audit --audit-level=critical
 
+
   scan-backend:
     <<: *defaults
     steps:
@@ -109,6 +132,46 @@ jobs:
           event: fail
           template: basic_fail_1 
 
+  deploy-infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Ensure backend infrastructure exit / create an instance for the backend
+          command: |
+            aws cloudformation deploy \
+            --template-file .circleci/files/backend.yml \
+            --stack-name udapeople-backend-${CIRCLE_WORKDLOW_ID:0:7} \
+            --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:7} \ 
+            --tags project=udapeople
+
+      - run:
+          name: Ensure frontend infrastructure exist / deploy the green S3 bucket
+          command: |
+            aws cloudformation deploy \
+            --template-file .circleci/files/frontend.yml \
+            --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7} \
+            --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:7} \
+            --tags project=udapeople
+
+      - run:
+          name: Add backend ip to inventory.txt file
+          command: |
+            echo $(aws ec2 describe-instances \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --filters Name=tag:aws:cloudformation:stack-name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7} \
+            --output text) >> ~/project/.circleci/ansible/inventory.txt
+            cat ~/project/.circleci/ansible/inventory.txt          
+
+      - persist_workspace:
+          root: ~/
+          paths: 
+            - project/.circleci/ansible/inventory.txt 
+
+      - roll-back-to-blue-deployment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+
 workflows:
   default-workflows:
     jobs:
@@ -122,9 +185,8 @@ workflows:
           requires: [build-frontend]
       - scan-backend:
           requires: [build-backend]
-
-
-
+      - deploy-infrastructure:
+          requires: [build-frontend, build-backend, scan-frontend, scan-backend]
 
 
 
