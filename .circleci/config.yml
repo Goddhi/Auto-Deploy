@@ -165,7 +165,7 @@ jobs:
             --output text) >> ~/project/.circleci/ansible/inventory.txt
             cat ~/project/.circleci/ansible/inventory.txt          
 
-      - persist_workspace:
+      - persist_to_workspace:
           root: ~/
           paths: 
             - project/.circleci/ansible/inventory.txt 
