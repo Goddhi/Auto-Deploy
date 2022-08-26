@@ -17,7 +17,7 @@ commands:
 
     steps:
       - run: 
-          name:
+          name: deleted stack when jobs fails
           when: on_fail
           command: |
             echo "Destroying environment: << parameters.workflow_id >>"
@@ -144,8 +144,7 @@ jobs:
             aws cloudformation deploy \
             --template-file .circleci/files/backend.yml \
             --stack-name udapeople-backend-${CIRCLE_WORKDLOW_ID:0:7} \
-            --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:7} \ 
-            --tags project=udapeople
+            --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:7} \
 
       - run:
           name: Ensure frontend infrastructure exist / deploy the green S3 bucket
@@ -154,7 +153,6 @@ jobs:
             --template-file .circleci/files/frontend.yml \
             --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7} \
             --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:7} \
-            --tags project=udapeople
 
       - run:
           name: Add backend ip to inventory.txt file
@@ -172,6 +170,10 @@ jobs:
 
       - roll-back-to-blue-deployment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+
+  # configure-infrastructure:
+  #   docker:
+  #     - image:           
 
 workflows:
   default-workflows:
