@@ -196,7 +196,7 @@ jobs:
       - run: 
           name: configure backend infrastructure using ansible playbook
           command: |
-            cd /.circleci/ansible
+            cd .circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml \
             --key-file ~/.ssh/id_rsa_1580c221d09bbe52ead9d181152fa494
 
