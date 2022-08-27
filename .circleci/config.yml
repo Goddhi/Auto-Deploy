@@ -163,7 +163,7 @@ jobs:
           command: |
             aws cloudformation deploy \
             --template-file .circleci/files/backend.yml \
-            --stack-name udapeople-backend-${CIRCLE_WORKDLOW_ID:0:7} \
+            --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7} \
             --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:7} \
 
       - run:
@@ -278,7 +278,8 @@ workflows:
           requires: [build-frontend, build-backend, scan-frontend, scan-backend]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
-
+      - run-migration:
+          requires: [configure-infrastructure]
 
 # version: 2.1
 
