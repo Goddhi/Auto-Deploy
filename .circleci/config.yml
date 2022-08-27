@@ -179,7 +179,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprint:
+          fingerprints:
             - "15:80:c2:21:d0:9b:be:52:ea:d9:d1:81:15:2f:a4:94"
 
       - run:
@@ -188,7 +188,7 @@ jobs:
             apk add --update --no-cache tar gzip ansible aws-cli      
 
       - attach_workspace:
-          ~/
+          at: ~/
 
       - restore_cache:
           keys: [backend-cache]
