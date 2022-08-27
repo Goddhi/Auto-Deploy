@@ -200,7 +200,7 @@ jobs:
             ansible-playbook -i inventory.txt configure-server.yml \
             --key-file ~/.ssh/id_rsa_1580c221d09bbe52ead9d181152fa494
 
-      - persist_workspace:
+      - persist_to_workspace:
           root: ~/
           paths: 
             - project/backend
