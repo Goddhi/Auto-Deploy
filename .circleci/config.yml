@@ -138,6 +138,7 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
+      - run: yum install -y tar gzip
       - run:
           name: Ensure backend infrastructure exit / create an instance for the backend
           command: |
@@ -171,10 +172,42 @@ jobs:
       - roll-back-to-blue-deployment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
-  # configure-infrastructure:
-  #   docker:
-  #     - image:           
 
+  configure-infrastructure:
+    docker:
+      - image: python:3.10-apline3.16          
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprint:
+            - "15:80:c2:21:d0:9b:be:52:ea:d9:d1:81:15:2f:a4:94"
+
+      - run:
+          name: install dependencies
+          command: |
+            apk add --update --no-cache tar gzip ansible aws-cli      
+
+      - attach_workspace:
+          ~/
+
+      - restore_cache:
+          keys: [backend-cache]
+          
+      - run: 
+          name: configure backend infrastructure using ansible playbook
+          command: |
+            cd /.circleci/ansible
+            ansible-playbook -i inventory.txt configure-server.yml \
+            --key-file ~/.ssh/id_rsa_1580c221d09bbe52ead9d181152fa494
+
+      - persist_workspace:
+          root: ~/
+          paths: 
+            - project/backend
+
+      - roll-back-to-blue-deployment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+          
 workflows:
   default-workflows:
     jobs:
