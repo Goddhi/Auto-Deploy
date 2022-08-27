@@ -306,9 +306,10 @@ jobs:
       - image: python:3.10-alpine3.1
     steps:
       - checkout
-      - add_shh_keys:
+      - add_ssh_keys:
           fingerprints:
-            - '15:80:c2:21:d0:9b:be:52:ea:d9:d1:81:15:2f:a4:94'
+            - "15:80:c2:21:d0:9b:be:52:ea:d9:d1:81:15:2f:a4:94"
+            
       - attach_workdpace:
           at: ~/
 
