@@ -21,11 +21,11 @@ commands:
           when: on_fail
           command: |
             echo "Destroying environment: << parameters.workflow_id >>"
-              aws cloudformation delete-stack \
-              --stack-name udapeople-backend-<<parameters.workflow_id>>
-                aws s3 rm s3://udapeople-<<parameters.workflow_id>> --recursive
-              aws cloudformation delete-stack \
-              --stack-name udapeople-frontend-<<parameters.workflow_id>> 
+            aws cloudformation delete-stack \
+            --stack-name udapeople-backend-<<parameters.workflow_id>>
+            aws s3 rm s3://udapeople-<<parameters.workflow_id>> --recursive
+            aws cloudformation delete-stack \
+            --stack-name udapeople-frontend-<<parameters.workflow_id>> 
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
@@ -367,16 +367,19 @@ jobs:
             fi
 
       - run:
-          name: Frontend smoke testt.
+          name: Frontend smoke test.
           command: |
-            export URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/#/employees" 
+            ##export URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/#/employees"            
+            export URL="https://google.com"
             echo $URL
-            if curl ${URL} | grep "welcome"
+            if curl ${URL} | grep "google"
             then
+              # Change this to 0 after the job fails
               return 0
-            else 
+            else
               return 1
             fi
+
       - roll-back-to-blue-deployment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7
 
