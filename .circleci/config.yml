@@ -376,7 +376,7 @@ jobs:
               return 0
             else 
               return 1
-            f1
+            fi
       - roll-back-to-blue-deployment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7
 
