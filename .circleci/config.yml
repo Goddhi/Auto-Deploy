@@ -342,7 +342,7 @@ jobs:
 
   smoke-test:
     docker:
-      - image: python:3.10-alpine3.1
+      - image: python:3.10-alpine3.16
     steps:
       - checkout
       - run: 
@@ -443,7 +443,8 @@ workflows:
           requires: [deploy-frontend]
       - smoke-test:
           requires: [deploy-frontend, deploy-backend]
-
+      - cloud-update:
+          requires: [smoke-test]
 
 # version: 2.1
 
