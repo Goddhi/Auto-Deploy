@@ -443,7 +443,7 @@ workflows:
           requires: [deploy-frontend]
       - smoke-test:
           requires: [deploy-frontend, deploy-backend]
-      - cloud-update:
+      - cloudfront-update:
           requires: [smoke-test]
 
 # version: 2.1
